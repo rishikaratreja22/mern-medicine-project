@@ -1,0 +1,169 @@
+<html>
+
+<head>
+    <title> Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="js/angular.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="css/animate.css">
+
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+
+
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/angular.min.js"></script>
+
+    <script>
+        var mymodule = angular.module("itsModule", []);
+        mymodule.controller("itsController", function ($scope, $http) {
+            $scope.doDelete = function (email, indx) {
+                if (confirm("Confirm") == false) {
+                    alert("No");
+                    return;
+                }
+                $http.get("/delete-receiver?email=" + email).then(fxDel, fxNotdel);
+                function fxDel(response) {
+                    alert(response.data);
+                    $scope.ajaxCall();
+                }
+                function fxNotdel(response) {
+                    alert(response.data);
+                }
+            } 
+            //---------------------------------------------
+            $scope.ajaxCall = function () {
+                $http.get("/show-receiver-profile").then(fxOk, fxNotOk);
+                function fxOk(response) {
+                    //alert(JSON.stringify(response.data));//data contains jsonArray
+                    $scope.jsonAry = response.data;
+                }
+                function fxNotOk(response) {
+                    alert(response.data);
+                }
+            }
+        });
+    </script>
+</head>
+
+<body ng-app="itsModule" ng-controller="itsController">
+
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar"
+        style="position: fixed;width: 100%;top: 0;">
+        <div class="container">
+            <a class="navbar-brand" href=""><span class="flaticon-pawprint-1 mr-2"></span>Manage Clients</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
+                aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="fa fa-bars"></span> Menu
+            </button>
+            <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a href="dash-admin.html" class="nav-link">DASHBOARD</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="extra bg-light"></div>
+
+    <div class="container mt-3">
+        <div class="row">
+            <center>
+                <input type="button" value="Show All Receiver Records" class="btn btn-success" ng-click="ajaxCall();"
+                    style="margin-top:120px;">
+            </center>
+        </div>
+
+        <div class="row">
+            <table class="table table-dark table-striped mt-3 col-md-12" border="1">
+                <tr align="center">
+                    <th>Pic</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Mobile No.</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Pincode</th>
+                    <th>Idproof</th>
+                    <th>Id No.</th>
+                    <th>Other Info</th>
+                    <th>Drop</th>
+                </tr>
+
+                <tr ng-repeat="row in jsonAry" align="center">
+                    <td>
+                        <img src="uploads/{{row.pic}}" alt="" width="100" height="100">
+                    </td>
+                    <td>
+                        {{row.email}}
+                    </td>
+
+                    <td>
+                        {{row.fname}}
+                    </td>
+
+                    <td>
+                        {{row.lname}}
+                    </td>
+
+                    <td>
+                        {{row.gender}}
+                    </td>
+
+                    <td>
+                        {{row.mobile}}
+                    </td>
+
+                    <td>
+                        {{row.address}}
+                    </td>
+
+                    <td>
+                        {{row.city}}
+                    </td>
+
+                    <td>
+                        {{row.state}}
+                    </td>
+
+                    <td>
+                        {{row.pin}}
+                    </td>
+
+                    <td>
+                        {{row.idproof}}
+                    </td>
+
+                    <td>
+                        {{row.idno}}
+                    </td>
+
+                    <td>
+                        {{row.info}}
+                    </td>
+
+                    <td>
+                        <input type="button" value="Delete" class="btn btn-danger" ng-click="doDelete(row.email)">
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

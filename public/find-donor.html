@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Find Your Donor </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="js/angular.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+        rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+    <script>
+
+        var angmodule = angular.module("myModule", []);
+        angmodule.controller("myController", function ($scope, $http) {
+
+            //$scope.citiesArry;
+            $scope.fetchCities = function () {
+                $http.get("/fetch-all-cities").then(fxOk, fxNotOk);
+                function fxOk(response) {
+                    $scope.citiesArry = response.data;
+                }
+                function fxNotOk(response) {
+                    alert(response.data);
+                }
+            }
+            //==================================================
+
+            $scope.medArry;
+            $scope.fetchMedicines = function () {
+                $http.get("/fetch-all-meds").then(fxOk, fxNotOk);
+                function fxOk(response) {
+                    $scope.medArry = response.data;
+                }
+                function fxNotOk(response) {
+                    alert(response.data);
+                }
+            }
+            //==================================================
+
+            $scope.doShowSelCity = function () {
+            }
+            $scope.doShowSelMedname = function () {
+            }
+
+            $scope.donorsArry;
+            $scope.showDonors = function () {
+                //alert($scope.selCity.city + " "+ $scope.selMedname.medname );
+                $http.get("/fetch-all-donors?city=" + $scope.selCity.city + "&medname=" + $scope.selMedname.medname).then(fxOk, fxNotOk);
+                function fxOk(response) {
+                    $scope.donorsArry = response.data;
+                }
+                function fxNotOk(response) {
+                    alert(response.data);
+                }
+            }   
+            //==================================================
+
+            $scope.moreInfoArry;
+            $scope.getMore = function (Email) {
+                $http.get("/moreInfo?Email=" + Email).then(fxOk, fxNotOk);
+                function fxOk(response) {
+                    $scope.moreInfoArry = response.data;
+                }
+                function fxNotOk(response) {
+                    alert(response.data);
+
+                }
+            }
+        });
+    </script>
+</head>
+
+<body ng-app="myModule" ng-controller="myController" ng-init="fetchCities();fetchMedicines();">
+
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar"
+        style="position: fixed;width: 100%;top: 0;">
+        <div class="container">
+            <a class="navbar-brand" href=""><span class="flaticon-pawprint-1 mr-2"></span>Find Donor</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
+                aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="fa fa-bars"></span> Menu
+            </button>
+            <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="dash-client.html" class="nav-link">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="extra"></div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="form-floating mb-4 col-sm-4" style="margin-top: 150px;">
+                <select id="cityName" class="form-select" ng-options="obj.city for obj in citiesArry"
+                    ng-init="selCity=none" ng-change="doShowSelCity();" ng-model="selCity">
+                    <option value="">Select City</option>
+                </select>
+            </div>
+
+            <div class="form-floating mb-4 col-sm-4" style="margin-top: 150px;">
+                <select id="medName" class="form-select" ng-options="obj.medname for obj in medArry"
+                    ng-change="doShowSelMedname();" ng-model="selMedname">
+                    <option value="">Select Medicine Name</option>
+                </select>
+            </div>
+
+            <div class="col-sm-2" style="margin-top: 150px;">
+                <input type="button" class="btn btn-success mt-2" value="Seek donors" id="btnSearch"
+                    ng-click="showDonors();">
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="card mt-2 mb-2 ms-2 me-2 shadow" style="width:18rem;" ng-repeat="row in donorsArry">
+                <div class="card-body">
+                    <img src="uploads/{{row.pic}}" alt="" width="200">
+                    <h3 class="card-title">{{row.fname}}</h3>
+                    <p class="card-text">{{row.lname}}</p>
+                    <p class="card-text">{{row.mobile}}</p>
+                    <p class="card-text">{{row.gender}}</p>
+                    <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoModal"
+                        ng-click="getMore(row.email);">More Info</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <form>
+        <div class="modal fade" id="infoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" ng-repeat="row in moreInfoArry">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">{{row.name}}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <table>
+                            <tr>
+                                <th>Email:{{row.email}}</th>
+                            </tr>
+                            <tr>
+                                <th>Contact:{{row.mobile}}</th>
+                            </tr>
+                            <tr>
+                                <th>Address:{{row.address}}</th>
+                            </tr>
+                            <tr>
+                                <th>City:{{row.city}}</th>
+                            </tr>
+                            <tr>
+                                <th>State:{{row.state}}</th>
+                            </tr>
+                            <tr>
+                                <th>Other info:{{row.info}}</th>
+                            </tr>
+
+
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="extraspace"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/jquery.timepicker.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/scrollax.min.js"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+    <script src="js/google-map.js"></script>
+    <script src="js/main.js"></script>!
+</body>
+
+</html>

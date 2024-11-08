@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Index</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <!-- <script src="js/index.js"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <script src="js/index.js"></script>
+
+    <script>
+        $(document).ready(function () { //jquery even handler
+            $("#btnSignup").click(function () {
+                var Email = $("#Formemail").val();
+                var Pwd = $("#Formpass").val();
+                var Type = $("#seltype").val(); 
+
+                var obj = {
+                    type: "get",
+                    url: "/db-signup", 
+                    data: {
+                        email: Email,
+                        pwd: Pwd,
+                        type: Type,
+                    }
+                }
+
+                $.ajax(obj).done(function (response) {
+                    alert("Signed up successfully");
+                    $("#SignupPage").html(err);
+                }).fail(function (err) {
+                    $("#SignupPage").html(err);
+                }) 
+            });
+            //==================================================
+
+            $("#btnLogin").click(function () {
+                var Email = $("#Form-email").val();
+                var Pwd = $("#Form-pass").val();
+
+                var obj = {
+                    type: "get",
+                    url: "/db-login",
+                    data: {
+                        email: Email,
+                        pwd: Pwd,
+                    }
+                }
+
+                $.ajax(obj).done(function (response) {
+                    alert(response);
+                    if (response == "Donor Logined") {
+                        location.href = "dash-donor.html";
+                    }
+                    else if (response == "Receiver Logined") {
+                        location.href = "dash-receiver.html";
+                    }
+                    else {
+                        $("#LoginPage").html("Plz Check Your Email Id");
+                    }
+                }).fail(function (msgerr) {
+                    $("#LoginPage").html(msgerr);
+                }) 
+            })
+        });
+    </script>
+    <style>
+        .container {
+            display: flex;
+            width: 1500px;
+            height: 450px;
+            align-items: center;
+            justify-content: space-evenly;
+
+        }
+
+        .card {
+            height: 440px;
+            width: 520px;
+            margin-top: 5px;
+            margin-right: 5px;
+            margin-left: 50px;
+            margin-bottom: 5px;
+            border: 3px black solid; 
+        }
+
+        .card-body {
+
+            margin: auto;
+            margin-top: 70px;
+        }
+
+        .vertical-center1 {
+            margin: 0;
+            position: absolute;
+            top: 92%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            left: 40%;
+
+        } 
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-primary">
+        <div class="container-fluid d-flex justify-content-between align-items-center" style="font-weight: bolder;">
+            <div class="d-flex">
+                <form class="me-2" role="search">
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#signupModal" style="font-size: 18px;">
+                        Signup
+                    </button>
+                </form>
+                <form role="search">
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size: 18px;">
+                        Login
+                    </button>
+                </form>
+            </div>
+            <a class="navbar-brand text-white mx-auto" href="#" style="font-size: 30px;">Medicine Donation Website</a>
+            <div class="d-flex"></div>
+        </div>
+    </nav>
+    <form>
+        <div class="modal fade " id="signupModal" tabindex="-1" aria-labelledby="SignupPage" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="SignupPage">Fill your details below</h1>
+                        <button type="button" data-bs-dismiss="modal" class="btn-close" data-bs-dimiss="modal"
+                            aria-label="close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="md-form mb-3">
+
+                            <label data-error="wrong" data-success="right" for="defaultForm-email"> Email
+                                address</label>
+                            <input type="email" id="Formemail" class="form-control validate" value="" required
+                                style="height: 50px;">
+                            <div id="errEmail" class="mt-2"></div>
+                        </div>
+
+                        <div class="md-form mb-3">
+                            <!-- <i class="fas fa-lock prefix grey-text"></i> -->
+                            <label data-error="wrong" data-success="right" for="Form-pass"> Password </label>
+                            <div>
+                                <!-- <i class="fa bi-eye eye" aria-hidden="true"></i> -->
+                                <input type="password" id="Formpass" class=" form-control validate" value="" required
+                                    style="height: 50px;">
+                            </div>
+                            <div id="errPass" class="mt-2"></div>
+                        </div>
+
+
+                        <div class="md-form mb-3">
+                            <label data-error="wrong" data-success="right" for="Form-pass"> User Type</label>
+                            <select id="seltype" class="form-control" required style="height: 50px;">
+                                <option selected value="">Select</option>
+                                <option value="Donor">Donor</option>
+                                <option value="Receiver">Receiver</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div style="padding:10px 0px 10px">
+                        <center>
+                            <form class="d-flex" role="search">
+                                <input class="btn btn-success" type="button" id="btnSignup" value="signup"> 
+                            </form>
+                        </center>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- ================================================Login Modal================================================================== -->
+    <form>
+        <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginPage" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal=title fs-5" id="LoginPage">Fill your details below</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="md-form mb-3">
+                            <!-- <i class="fas fa-envelope prefix grey-text"></i> -->
+                            <label data-error="wrong" data-success="right" for="defaultForm-email"> Email
+                                address</label>
+                            <input type="email" id="Form-email" class="form-control validate" required
+                                style="height: 50px;">
+                            <div id="err-Email" class="mt-2"></div>
+                        </div>
+
+
+                        <div class="md-form mb-3">
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
+                            <div>
+                                <!-- <i class="fa bi-eye eye" aria-hidden="true"></i> -->
+                                <input type="password" id="Form-pass" class=" form-control validate" value="" required
+                                    style="height: 50px;">
+                            </div>
+
+                            <div id="err-Pass" class="mt-2"></div>
+                        </div>
+
+                        <div style="padding:10px 0px 10px">
+                            <center>
+                                <input type="button" class="btn btn-success" value="Login" id="btnLogin">
+                            </center>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+    <!------------------------------------Carousal---------------------------------------->
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="pics/med10.jpg" style="height:600px; width:400px;" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="pics/pic1.jpg" style="height:600px; width:400px;" class="d-block w-100" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <!------------------------------------------------------------------------------------->
+    <div>
+        <div class="col-md-12 bg-dark text-white" style="margin-top:2px;">
+            <center>
+                <font>
+                    <h3>OUR SERVICES</h3>
+                </font>
+            </center>
+        </div>
+        <div class="container">
+            <div class="card" style="width: 18rem;">
+                <img src="pics/picc1.jpg" class="card-img-top" alt="..." style="height:200px;">
+                <div class="card-body" style="margin-top:1px;">
+                    <center>
+                        <h4 class="card-title">DONATE MEDICINES</h4>
+                        <p class="card-text" style="font-size:19px;">Returned drugs can be useful for some populations
+                            that
+                            otherwise would not have access to those medicines.</p>
+                    </center>
+                </div>
+            </div>
+            <!--------------------------------------->
+            <div class="card" style="width: 18rem;">
+                <img src="pics/picc2.jpg" class="card-img-top" alt="..." style="height:200px;">
+                <div class="card-body" style="margin-top:1px;">
+                    <center>
+                        <h4 class="card-title">GET MED FOR FREE</h4>
+                        <p class="card-text" style="font-size:19px;">Donations are often used to support the rebuilding
+                            of health
+                            systems, or to ensure access of populations to health products they otherwise would not
+                            have.</p>
+                    </center>
+                </div>
+            </div>
+            <!--------------------------------------->
+            <div class="card" style="width: 18rem;">
+                <img src="pics/picc3.png" class="card-img-top" alt="..." style="height:200px;">
+                <div class="card-body" style="margin-top:1px;">
+                    <center>
+                        <h4 class="card-title">OUR MISSION</h4>
+                        <p class="card-text" style="font-size:19px;">We here provide free medicines to all those poor
+                            people who
+                            aren't able to afford medcines.</p>
+                    </center>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="height:40px; margin-top: 2px;">
+            <div class="col-md-12 bg-primary text-white">
+                <center>
+                    <font>
+                        <h4>Reach Us</h4>
+                    </font>
+                </center>
+            </div>
+        </div>
+        <table style="width: 100%; border-spacing: 0; border-collapse: collapse;">
+            <tr height="400">
+                <td style="width: 100%; padding: 0; margin: 0;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3447.8805713513625!2d74.95013941444769!3d30.211955917596207!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391732a4f07278a9%3A0x4a0d6293513f98ce!2sBanglore%20Computer%20Education!5e0!3m2!1sen!2sin!4v1655356910186!5m2!1sen!2sin"
+                        width="100%" height="400" style="border: 0; display: block;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
